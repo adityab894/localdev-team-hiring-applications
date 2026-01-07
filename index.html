@@ -274,6 +274,29 @@
             color: var(--text-secondary);
         }
 
+        .interview-time {
+            font-size: 0.95rem;
+            color: #a5b4fc;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .content-team-badge {
+            font-size: 0.85rem;
+            color: #fbbf24;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 8px;
+            text-align: center;
+        }
+
         .card-tags {
             display: flex;
             flex-wrap: wrap;
@@ -315,6 +338,56 @@
         .view-button:hover {
             transform: scale(1.02);
             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .meeting-button {
+            margin-top: 0.75rem;
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .meeting-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .attendance-button {
+            margin-top: 0.75rem;
+            width: 100%;
+            padding: 0.875rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .attendance-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .attendance-button.present {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: #10b981;
+        }
+
+        .attendance-button.absent {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-color: #ef4444;
         }
 
         .no-results {
@@ -418,6 +491,28 @@
     <div class="applications-grid" id="applicationsGrid"></div>
 
     <script>
+        const meetingLink = "https://meet.google.com/ihz-ttpz-wyc";
+        
+        const scheduleMap = {
+            "shivraj patare": "09:30 AM - 10:00 AM",
+            "Rohan Dattatraya Bhoge": "10:00 AM - 10:30 AM",
+            "Daksh Mishra": "10:30 AM - 11:00 AM",
+            "Parth Kothari": "11:00 AM - 11:30 AM",
+            "Pranav Kale": "11:30 AM - 12:00 PM",
+            "Akhilesh Reddy": "12:00 PM - 12:30 PM",
+            "Sarthak Rajesh Pawar": "01:00 PM - 01:30 PM",
+            "Shreeram Mutukundu": "03:00 PM - 03:30 PM",
+            "Shravan Patel": "03:30 PM - 04:00 PM",
+            "Mritunjay Pandey": "04:00 PM - 04:30 PM",
+            "Sravan Avvaru": "04:30 PM - 05:00 PM",
+            "Durgesh Mahajan": "05:00 PM - 05:30 PM",
+            "Basavaraj Kallapur": "05:30 PM - 06:00 PM",
+            "Ashitosh Bachute": "06:00 PM - 06:30 PM"
+        };
+
+        // Load attendance from localStorage
+        let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || {};
+
         const applications = [
             { name: "Akhilesh Reddy", file: "Akhilesh Reddy 2da480539ad0810ca2d0f200af1587ed.html", skills: ["Python", "React", "TypeScript", "AI Tools"] },
             { name: "Anushka Raj", file: "Anushka Raj 2da480539ad0812099d1d896059c1b47.html", skills: ["Web Development"] },
@@ -447,6 +542,29 @@
             return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         }
 
+        function toggleAttendance(name) {
+            if (!attendanceData[name]) {
+                attendanceData[name] = 'present';
+            } else if (attendanceData[name] === 'present') {
+                attendanceData[name] = 'absent';
+            } else {
+                delete attendanceData[name];
+            }
+            localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+            renderApplications(applications);
+        }
+
+        function getAttendanceButton(name) {
+            const status = attendanceData[name];
+            if (status === 'present') {
+                return `<button class="attendance-button present" onclick="event.stopPropagation(); toggleAttendance('${name}')">✓ Present</button>`;
+            } else if (status === 'absent') {
+                return `<button class="attendance-button absent" onclick="event.stopPropagation(); toggleAttendance('${name}')">✗ Absent</button>`;
+            } else {
+                return `<button class="attendance-button" onclick="event.stopPropagation(); toggleAttendance('${name}')">Mark Attendance</button>`;
+            }
+        }
+
         function renderApplications(filteredApps) {
             const grid = document.getElementById('applicationsGrid');
             const displayCount = document.getElementById('displayCount');
@@ -459,21 +577,35 @@
 
             displayCount.textContent = filteredApps.length;
             
-            grid.innerHTML = filteredApps.map((app, index) => `
-                <div class="application-card" style="animation-delay: ${index * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
-                    <div class="card-header">
-                        <div class="avatar">${getInitials(app.name)}</div>
-                        <div>
-                            <div class="card-title">${app.name}</div>
-                            <div class="card-meta">Applicant</div>
+            grid.innerHTML = filteredApps.map((app, index) => {
+                const interviewTime = scheduleMap[app.name];
+                const timeDisplay = interviewTime 
+                    ? `<div class="interview-time">🕒 ${interviewTime}</div>`
+                    : `<div class="content-team-badge">📝 Content Team</div>`;
+                
+                const meetingButton = interviewTime 
+                    ? `<button class="meeting-button" onclick="event.stopPropagation(); window.open('${meetingLink}', '_blank')">📹 Join Meeting</button>`
+                    : '';
+                
+                return `
+                    <div class="application-card" style="animation-delay: ${index * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
+                        <div class="card-header">
+                            <div class="avatar">${getInitials(app.name)}</div>
+                            <div>
+                                <div class="card-title">${app.name}</div>
+                                <div class="card-meta">Applicant</div>
+                            </div>
                         </div>
+                        ${timeDisplay}
+                        <div class="card-tags">
+                            ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
+                        </div>
+                        <button class="view-button">View Application →</button>
+                        ${meetingButton}
+                        ${getAttendanceButton(app.name)}
                     </div>
-                    <div class="card-tags">
-                        ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
-                    </div>
-                    <button class="view-button">View Application →</button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Initial render
