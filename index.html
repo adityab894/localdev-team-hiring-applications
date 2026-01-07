@@ -488,27 +488,59 @@
         </div>
     </div>
 
-    <div class="applications-grid" id="applicationsGrid"></div>
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+        <h2 style="color: var(--text-primary); font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            Development Team
+        </h2>
+    </div>
+    <div class="applications-grid" id="developmentGrid"></div>
+
+    <div style="max-width: 1400px; margin: 3rem auto 0; padding: 0 2rem;">
+        <h2 style="color: var(--text-primary); font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            Content Team
+        </h2>
+    </div>
+    <div class="applications-grid" id="contentGrid"></div>
 
     <script>
         const meetingLink = "https://meet.google.com/ihz-ttpz-wyc";
         
         const scheduleMap = {
             "shivraj patare": "09:30 AM - 10:00 AM",
-            "Rohan Dattatraya Bhoge": "01:30 PM - 02:00 PM",
+            "Rohan Dattatraya Bhoge": "10:00 AM - 10:30 AM",
             "Daksh Mishra": "10:30 AM - 11:00 AM",
             "Parth Kothari": "11:00 AM - 11:30 AM",
             "Pranav Kale": "11:30 AM - 12:00 PM",
             "Akhilesh Reddy": "12:00 PM - 12:30 PM",
             "Sarthak Rajesh Pawar": "01:00 PM - 01:30 PM",
-            "Shreeram Mutukundu": "03:00 PM - 03:30 PM",
-            "Shravan Patel": "03:30 PM - 04:00 PM",
             "Mritunjay Pandey": "04:00 PM - 04:30 PM",
             "Sravan Avvaru": "04:30 PM - 05:00 PM",
             "Durgesh Mahajan": "05:00 PM - 05:30 PM",
             "Basavaraj Kallapur": "05:30 PM - 06:00 PM",
-            "Ashitosh Bachute": "06:00 PM - 06:30 PM"
+            "Ashitosh Bachute": "06:00 PM - 06:30 PM",
+            "Shreeram Mutukundu": "06:30 PM - 07:00 PM",
+            "Shravan Patel": "07:00 PM - 07:30 PM",
+            "Gaurav Mishra": "07:30 PM - 08:00 PM"
         };
+
+        // Time order for sorting
+        const timeOrder = [
+            "shivraj patare",
+            "Rohan Dattatraya Bhoge",
+            "Daksh Mishra",
+            "Parth Kothari",
+            "Pranav Kale",
+            "Akhilesh Reddy",
+            "Sarthak Rajesh Pawar",
+            "Mritunjay Pandey",
+            "Sravan Avvaru",
+            "Durgesh Mahajan",
+            "Basavaraj Kallapur",
+            "Ashitosh Bachute",
+            "Shreeram Mutukundu",
+            "Shravan Patel",
+            "Gaurav Mishra"
+        ];
 
         // Load attendance from localStorage
         let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || {};
@@ -566,46 +598,82 @@
         }
 
         function renderApplications(filteredApps) {
-            const grid = document.getElementById('applicationsGrid');
+            const developmentGrid = document.getElementById('developmentGrid');
+            const contentGrid = document.getElementById('contentGrid');
             const displayCount = document.getElementById('displayCount');
             
+            // Separate applications into development and content teams
+            let developmentApps = filteredApps.filter(app => scheduleMap[app.name]);
+            const contentApps = filteredApps.filter(app => !scheduleMap[app.name]);
+            
+            // Sort development apps by time order
+            developmentApps.sort((a, b) => {
+                const indexA = timeOrder.indexOf(a.name);
+                const indexB = timeOrder.indexOf(b.name);
+                return indexA - indexB;
+            });
+            
             if (filteredApps.length === 0) {
-                grid.innerHTML = '<div class="no-results">No applications found matching your search.</div>';
+                developmentGrid.innerHTML = '<div class="no-results">No applications found matching your search.</div>';
+                contentGrid.innerHTML = '';
                 displayCount.textContent = '0';
                 return;
             }
 
             displayCount.textContent = filteredApps.length;
             
-            grid.innerHTML = filteredApps.map((app, index) => {
-                const interviewTime = scheduleMap[app.name];
-                const timeDisplay = interviewTime 
-                    ? `<div class="interview-time">🕒 ${interviewTime}</div>`
-                    : `<div class="content-team-badge">📝 Content Team</div>`;
-                
-                const meetingButton = interviewTime 
-                    ? `<button class="meeting-button" onclick="event.stopPropagation(); window.open('${meetingLink}', '_blank')">📹 Join Meeting</button>`
-                    : '';
-                
-                return `
-                    <div class="application-card" style="animation-delay: ${index * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
-                        <div class="card-header">
-                            <div class="avatar">${getInitials(app.name)}</div>
-                            <div>
-                                <div class="card-title">${app.name}</div>
-                                <div class="card-meta">Applicant</div>
+            // Render Development Team
+            if (developmentApps.length === 0) {
+                developmentGrid.innerHTML = '<div class="no-results">No development team applications found.</div>';
+            } else {
+                developmentGrid.innerHTML = developmentApps.map((app, index) => {
+                    const interviewTime = scheduleMap[app.name];
+                    
+                    return `
+                        <div class="application-card" style="animation-delay: ${index * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
+                            <div class="card-header">
+                                <div class="avatar">${getInitials(app.name)}</div>
+                                <div>
+                                    <div class="card-title">${app.name}</div>
+                                    <div class="card-meta">Applicant</div>
+                                </div>
                             </div>
+                            <div class="interview-time">🕒 ${interviewTime}</div>
+                            <div class="card-tags">
+                                ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
+                            </div>
+                            <button class="view-button">View Application →</button>
+                            <button class="meeting-button" onclick="event.stopPropagation(); window.open('${meetingLink}', '_blank')">📹 Join Meeting</button>
+                            ${getAttendanceButton(app.name)}
                         </div>
-                        ${timeDisplay}
-                        <div class="card-tags">
-                            ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
+                    `;
+                }).join('');
+            }
+
+            // Render Content Team
+            if (contentApps.length === 0) {
+                contentGrid.innerHTML = '<div class="no-results">No content team applications found.</div>';
+            } else {
+                contentGrid.innerHTML = contentApps.map((app, index) => {
+                    return `
+                        <div class="application-card" style="animation-delay: ${(developmentApps.length + index) * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
+                            <div class="card-header">
+                                <div class="avatar">${getInitials(app.name)}</div>
+                                <div>
+                                    <div class="card-title">${app.name}</div>
+                                    <div class="card-meta">Applicant</div>
+                                </div>
+                            </div>
+                            <div class="content-team-badge">📝 Content Team</div>
+                            <div class="card-tags">
+                                ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
+                            </div>
+                            <button class="view-button">View Application →</button>
+                            ${getAttendanceButton(app.name)}
                         </div>
-                        <button class="view-button">View Application →</button>
-                        ${meetingButton}
-                        ${getAttendanceButton(app.name)}
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            }
         }
 
         // Initial render
