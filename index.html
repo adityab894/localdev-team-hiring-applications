@@ -465,11 +465,11 @@
         <p class="subtitle">Hiring Applications Dashboard</p>
         <div class="stats">
             <div class="stat-item">
-                <div class="stat-number" id="totalCount">24</div>
+                <div class="stat-number" id="totalCount">21</div>
                 <div class="stat-label">Total Applications</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number" id="displayCount">24</div>
+                <div class="stat-number" id="displayCount">21</div>
                 <div class="stat-label">Showing</div>
             </div>
         </div>
@@ -496,6 +496,13 @@
     <div class="applications-grid" id="developmentGrid"></div>
 
     <div style="max-width: 1400px; margin: 3rem auto 0; padding: 0 2rem;">
+        <h2 style="color: var(--text-primary); font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            UI/UX Designer
+        </h2>
+    </div>
+    <div class="applications-grid" id="uiuxGrid"></div>
+
+    <div style="max-width: 1400px; margin: 3rem auto 0; padding: 0 2rem;">
         <h2 style="color: var(--text-primary); font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
             Content Team
         </h2>
@@ -506,7 +513,6 @@
         const meetingLink = "https://meet.google.com/ihz-ttpz-wyc";
         
         const scheduleMap = {
-            "shivraj patare": "09:30 AM - 10:00 AM",
             "Rohan Dattatraya Bhoge": "10:00 AM - 10:30 AM",
             "Daksh Mishra": "10:30 AM - 11:00 AM",
             "Parth Kothari": "11:00 AM - 11:30 AM",
@@ -520,12 +526,16 @@
             "Ashitosh Bachute": "06:00 PM - 06:30 PM",
             "Shreeram Mutukundu": "06:30 PM - 07:00 PM",
             "Shravan Patel": "07:00 PM - 07:30 PM",
-            "Gaurav Mishra": "07:30 PM - 08:00 PM"
+            "Gaurav Mishra": "07:30 PM - 08:00 PM",
+            "Komal Raj": "08:00 PM - 08:30 PM",
+            "Anushka Raj": "08:30 PM - 09:00 PM",
+            "Harsh Parag Jobanputra": "09:00 PM - 09:30 PM",
+            "Sanskruti Sandip Dhamal": "09:30 PM - 10:00 PM",
+            "Uma Satish Salunke": "10:00 PM - 10:30 PM"
         };
 
         // Time order for sorting
         const timeOrder = [
-            "shivraj patare",
             "Rohan Dattatraya Bhoge",
             "Daksh Mishra",
             "Parth Kothari",
@@ -539,7 +549,12 @@
             "Ashitosh Bachute",
             "Shreeram Mutukundu",
             "Shravan Patel",
-            "Gaurav Mishra"
+            "Gaurav Mishra",
+            "Komal Raj",
+            "Anushka Raj",
+            "Harsh Parag Jobanputra",
+            "Sanskruti Sandip Dhamal",
+            "Uma Satish Salunke"
         ];
 
         // Load attendance from localStorage
@@ -547,27 +562,24 @@
 
         const applications = [
             { name: "Akhilesh Reddy", file: "Akhilesh Reddy 2da480539ad0810ca2d0f200af1587ed.html", skills: ["Python", "React", "TypeScript", "AI Tools"] },
-            { name: "Anushka Raj", file: "Anushka Raj 2da480539ad0812099d1d896059c1b47.html", skills: ["Web Development"] },
+            { name: "Anushka Raj", file: "Anushka Raj 2da480539ad0812099d1d896059c1b47.html", skills: ["Content & Video"] },
             { name: "Ashitosh Bachute", file: "Ashitosh Bachute 2da480539ad08116a3b2e425ac1b58d4.html", skills: ["Full Stack"] },
             { name: "Basavaraj Kallapur", file: "Basavaraj Kallapur 2da480539ad081e0b603d1df8586af2c.html", skills: ["Backend"] },
             { name: "Daksh Mishra", file: "Daksh Mishra 2d9480539ad081a4befef9ddabdd71cc.html", skills: ["Frontend"] },
             { name: "Durgesh Mahajan", file: "Durgesh Mahajan 2da480539ad081609e1cdce6515887e3.html", skills: ["Development"] },
             { name: "Gaurav Mishra", file: "Gaurav Mishra 2da480539ad081b6b59ed3598ba9ecb8.html", skills: ["Software Engineering"] },
-            { name: "Harsh Parag Jobanputra", file: "Harsh Parag Jobanputra 2da480539ad081458514dda49377d8a9.html", skills: ["Development"] },
-            { name: "Jaysing Ingle", file: "Jaysing Ingle 2d9480539ad081a8a2b7c6e77a76e502.html", skills: ["Engineering"] },
+            { name: "Harsh Parag Jobanputra", file: "Harsh Parag Jobanputra 2da480539ad081458514dda49377d8a9.html", skills: ["Editor"] },
+            { name: "Komal Raj", file: "resume.pdf", skills: ["UI/UX Designer", "Figma", "Adobe XD"] },
             { name: "Mritunjay Pandey", file: "Mritunjay Pandey 2da480539ad081f9b0ecfb4f04e87d0a.html", skills: ["Development"] },
             { name: "Parth Kothari", file: "Parth Kothari 2d9480539ad08192a981ee2695a9d0fb.html", skills: ["Tech"] },
             { name: "Pranav Kale", file: "Pranav Kale 2d9480539ad0813b86c1c6cee7db5ca6.html", skills: ["Development"] },
-            { name: "Rajvardhan Wakharade", file: "Rajvardhan Wakharade 2dd480539ad08182bf97ea335dab1c6d.html", skills: ["Engineering"] },
             { name: "Rohan Dattatraya Bhoge", file: "Rohan Dattatraya Bhoge 2da480539ad081b184a7fc6246134d60.html", skills: ["Development"] },
-            { name: "Sanskruti Sandip Dhamal", file: "Sanskruti Sandip Dhamal 2dd480539ad0815ea4a2e8a4cfb2810e.html", skills: ["Tech"] },
+            { name: "Sanskruti Sandip Dhamal", file: "Sanskruti Sandip Dhamal 2dd480539ad0815ea4a2e8a4cfb2810e.html", skills: ["Graphics & Video Editing (Basic)"] },
             { name: "Sarthak Rajesh Pawar", file: "Sarthak Rajesh Pawar 2da480539ad081399666fd10e19376ba.html", skills: ["Development"] },
             { name: "Shravan Patel", file: "Shravan Patel 2de480539ad081d194f0c59261249855.html", skills: ["Engineering"] },
             { name: "Shreeram Mutukundu", file: "Shreeram Mutukundu 2db480539ad0819797dcd70cd6db945c.html", skills: ["Development"] },
             { name: "Sravan Avvaru", file: "Sravan Avvaru 2db480539ad08181bbffcae00abd1e6e.html", skills: ["Tech"] },
-            { name: "Uma Satish Salunke", file: "Uma Satish Salunke 2df480539ad08137a6e8fb795aa3bdd0.html", skills: ["Development"] },
-            { name: "Vishnu Jaiswal", file: "Vishnu Jaiswal 2da480539ad081ca976cf4343b280d2d.html", skills: ["Development"] },
-            { name: "Shivraj Patare", file: "shivraj patare 2da480539ad0816d8917fbfaf72bf05a.html", skills: ["Engineering"] }
+            { name: "Uma Satish Salunke", file: "Uma Satish Salunke 2df480539ad08137a6e8fb795aa3bdd0.html", skills: ["Content Writing"] }
         ];
 
         function getInitials(name) {
@@ -599,15 +611,35 @@
 
         function renderApplications(filteredApps) {
             const developmentGrid = document.getElementById('developmentGrid');
+            const uiuxGrid = document.getElementById('uiuxGrid');
             const contentGrid = document.getElementById('contentGrid');
             const displayCount = document.getElementById('displayCount');
             
-            // Separate applications into development and content teams
-            let developmentApps = filteredApps.filter(app => scheduleMap[app.name]);
-            const contentApps = filteredApps.filter(app => !scheduleMap[app.name]);
+            // Define team categories
+            const uiuxNames = ["Komal Raj"];
+            const contentNames = ["Anushka Raj", "Harsh Parag Jobanputra", "Sanskruti Sandip Dhamal", "Uma Satish Salunke"];
             
-            // Sort development apps by time order
+            // Separate applications into teams
+            let developmentApps = filteredApps.filter(app => 
+                scheduleMap[app.name] && !uiuxNames.includes(app.name) && !contentNames.includes(app.name)
+            );
+            let uiuxApps = filteredApps.filter(app => uiuxNames.includes(app.name));
+            let contentApps = filteredApps.filter(app => contentNames.includes(app.name));
+            
+            // Sort by time order
             developmentApps.sort((a, b) => {
+                const indexA = timeOrder.indexOf(a.name);
+                const indexB = timeOrder.indexOf(b.name);
+                return indexA - indexB;
+            });
+            
+            uiuxApps.sort((a, b) => {
+                const indexA = timeOrder.indexOf(a.name);
+                const indexB = timeOrder.indexOf(b.name);
+                return indexA - indexB;
+            });
+            
+            contentApps.sort((a, b) => {
                 const indexA = timeOrder.indexOf(a.name);
                 const indexB = timeOrder.indexOf(b.name);
                 return indexA - indexB;
@@ -615,6 +647,7 @@
             
             if (filteredApps.length === 0) {
                 developmentGrid.innerHTML = '<div class="no-results">No applications found matching your search.</div>';
+                uiuxGrid.innerHTML = '';
                 contentGrid.innerHTML = '';
                 displayCount.textContent = '0';
                 return;
@@ -650,11 +683,13 @@
                 }).join('');
             }
 
-            // Render Content Team
-            if (contentApps.length === 0) {
-                contentGrid.innerHTML = '<div class="no-results">No content team applications found.</div>';
+            // Render UI/UX Team
+            if (uiuxApps.length === 0) {
+                uiuxGrid.innerHTML = '<div class="no-results">No UI/UX applications found.</div>';
             } else {
-                contentGrid.innerHTML = contentApps.map((app, index) => {
+                uiuxGrid.innerHTML = uiuxApps.map((app, index) => {
+                    const interviewTime = scheduleMap[app.name];
+                    
                     return `
                         <div class="application-card" style="animation-delay: ${(developmentApps.length + index) * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
                             <div class="card-header">
@@ -664,11 +699,40 @@
                                     <div class="card-meta">Applicant</div>
                                 </div>
                             </div>
-                            <div class="content-team-badge">📝 Content Team</div>
+                            <div class="interview-time">🕒 ${interviewTime}</div>
                             <div class="card-tags">
                                 ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
                             </div>
                             <button class="view-button">View Application →</button>
+                            <button class="meeting-button" onclick="event.stopPropagation(); window.open('${meetingLink}', '_blank')">📹 Join Meeting</button>
+                            ${getAttendanceButton(app.name)}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Render Content Team
+            if (contentApps.length === 0) {
+                contentGrid.innerHTML = '<div class="no-results">No content team applications found.</div>';
+            } else {
+                contentGrid.innerHTML = contentApps.map((app, index) => {
+                    const interviewTime = scheduleMap[app.name];
+                    
+                    return `
+                        <div class="application-card" style="animation-delay: ${(developmentApps.length + uiuxApps.length + index) * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
+                            <div class="card-header">
+                                <div class="avatar">${getInitials(app.name)}</div>
+                                <div>
+                                    <div class="card-title">${app.name}</div>
+                                    <div class="card-meta">Applicant</div>
+                                </div>
+                            </div>
+                            <div class="interview-time">🕒 ${interviewTime}</div>
+                            <div class="card-tags">
+                                ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
+                            </div>
+                            <button class="view-button">View Application →</button>
+                            <button class="meeting-button" onclick="event.stopPropagation(); window.open('${meetingLink}', '_blank')">📹 Join Meeting</button>
                             ${getAttendanceButton(app.name)}
                         </div>
                     `;
