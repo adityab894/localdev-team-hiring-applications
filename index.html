@@ -290,6 +290,23 @@
             text-align: center;
         }
 
+        .interview-date {
+            font-size: 0.85rem;
+            color: #f9a8d4;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.75rem;
+            background: rgba(249, 168, 212, 0.1);
+            border: 1px solid rgba(249, 168, 212, 0.2);
+            border-radius: 6px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
         .content-team-badge {
             font-size: 0.85rem;
             color: #fbbf24;
@@ -565,6 +582,29 @@
             "Uma Satish Salunke": "10:00 PM - 10:30 PM"
         };
 
+        // Date mapping for each applicant
+        const dateMap = {
+            "Rohan Dattatraya Bhoge": "January 7, 2026",
+            "Daksh Mishra": "January 7, 2026",
+            "Parth Kothari": "January 7, 2026",
+            "Pranav Kale": "January 7, 2026",
+            "Akhilesh Reddy": "January 8, 2026",
+            "Sarthak Rajesh Pawar": "January 7, 2026",
+            "Mritunjay Pandey": "January 7, 2026",
+            "Sravan Avvaru": "January 7, 2026",
+            "Durgesh Mahajan": "January 7, 2026",
+            "Basavaraj Kallapur": "January 8, 2026",
+            "Ashitosh Bachute": "January 7, 2026",
+            "Shreeram Mutukundu": "January 7, 2026",
+            "Shravan Patel": "January 7, 2026",
+            "Gaurav Mishra": "January 7, 2026",
+            "Komal Raj": "January 8, 2026",
+            "Anushka Raj": "January 8, 2026",
+            "Harsh Parag Jobanputra": "January 8, 2026",
+            "Sanskruti Sandip Dhamal": "January 8, 2026",
+            "Uma Satish Salunke": "January 8, 2026"
+        };
+
         // Time order for sorting
         const timeOrder = [
             "Rohan Dattatraya Bhoge",
@@ -785,6 +825,7 @@
             } else {
                 developmentGrid.innerHTML = developmentApps.map((app, index) => {
                     const interviewTime = scheduleMap[app.name];
+                    const interviewDate = dateMap[app.name] || "January 7, 2026";
                     
                     return `
                         <div class="application-card" style="animation-delay: ${index * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
@@ -799,6 +840,7 @@
                             <div class="card-tags">
                                 ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
                             </div>
+                            <div class="interview-date">📅 ${interviewDate}</div>
                             <button class="view-button">View Application →</button>
                             <button class="meeting-button" onclick="event.stopPropagation(); window.open('${meetingLink}', '_blank')">📹 Join Meeting</button>
                             ${getAttendanceButton(app.name)}
@@ -813,6 +855,7 @@
             } else {
                 uiuxGrid.innerHTML = uiuxApps.map((app, index) => {
                     const interviewTime = scheduleMap[app.name];
+                    const interviewDate = dateMap[app.name] || "January 7, 2026";
                     
                     return `
                         <div class="application-card" style="animation-delay: ${(developmentApps.length + index) * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
@@ -827,6 +870,7 @@
                             <div class="card-tags">
                                 ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
                             </div>
+                            <div class="interview-date">📅 ${interviewDate}</div>
                             <button class="view-button">View Application →</button>
                             <button class="meeting-button" onclick="event.stopPropagation(); window.open('${meetingLink}', '_blank')">📹 Join Meeting</button>
                             ${getAttendanceButton(app.name)}
@@ -841,6 +885,7 @@
             } else {
                 contentGrid.innerHTML = contentApps.map((app, index) => {
                     const interviewTime = scheduleMap[app.name];
+                    const interviewDate = dateMap[app.name] || "January 7, 2026";
                     
                     return `
                         <div class="application-card" style="animation-delay: ${(developmentApps.length + uiuxApps.length + index) * 0.05}s" onclick="window.open('${encodeURIComponent(app.file)}', '_blank')">
@@ -855,6 +900,7 @@
                             <div class="card-tags">
                                 ${app.skills.map(skill => `<span class="tag">${skill}</span>`).join('')}
                             </div>
+                            <div class="interview-date">📅 ${interviewDate}</div>
                             <button class="view-button">View Application →</button>
                             <button class="meeting-button" onclick="event.stopPropagation(); window.open('${meetingLink}', '_blank')">📹 Join Meeting</button>
                             ${getAttendanceButton(app.name)}
