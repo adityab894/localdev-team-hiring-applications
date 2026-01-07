@@ -7,6 +7,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -510,6 +515,32 @@
     <div class="applications-grid" id="contentGrid"></div>
 
     <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+                apiKey: "AIzaSyBHEyPHOetR7V314o2KAjS7_6TBD9NZQHM",
+                authDomain: "localdev-attendance.firebaseapp.com",
+                projectId: "localdev-attendance",
+                storageBucket: "localdev-attendance.firebasestorage.app",
+                messagingSenderId: "878975233942",
+                appId: "1:878975233942:web:573bf5fe700f46ca43b7b7"
+        };
+
+        // Initialize Firebase (use fallback if not configured)
+        let db = null;
+        let useFirebase = false;
+        
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.firestore();
+            useFirebase = true;
+            console.log('Firebase initialized successfully');
+        } catch (error) {
+            console.warn('Firebase not configured, using localStorage fallback:', error);
+            useFirebase = false;
+        }
+
         const meetingLink = "https://meet.google.com/ihz-ttpz-wyc";
         
         const scheduleMap = {
@@ -557,26 +588,92 @@
             "Uma Satish Salunke"
         ];
 
-        // Load attendance from localStorage with error handling
+        // Global attendance data
         let attendanceData = {};
-        try {
-            const storedData = localStorage.getItem('attendanceData');
-            if (storedData) {
-                attendanceData = JSON.parse(storedData);
+        let attendanceLoaded = false;
+
+        // Load attendance from Firebase or localStorage
+        async function loadAttendance() {
+            if (useFirebase && db) {
+                try {
+                    const docRef = db.collection('attendance').doc('currentSession');
+                    const doc = await docRef.get();
+                    if (doc.exists) {
+                        attendanceData = doc.data().data || {};
+                        console.log('Attendance loaded from Firebase:', attendanceData);
+                    } else {
+                        console.log('No Firebase data found, starting fresh');
+                        attendanceData = {};
+                    }
+                } catch (error) {
+                    console.error('Error loading from Firebase:', error);
+                    loadFromLocalStorage();
+                }
+            } else {
+                loadFromLocalStorage();
             }
-        } catch (error) {
-            console.error('Error loading attendance data:', error);
-            attendanceData = {};
+            attendanceLoaded = true;
+            renderApplications(applications);
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const storedData = localStorage.getItem('attendanceData');
+                if (storedData) {
+                    attendanceData = JSON.parse(storedData);
+                    console.log('Attendance loaded from localStorage:', attendanceData);
+                }
+            } catch (error) {
+                console.error('Error loading attendance data:', error);
+                attendanceData = {};
+            }
         }
 
         // Function to save attendance data
-        function saveAttendance() {
+        async function saveAttendance() {
+            if (useFirebase && db) {
+                try {
+                    await db.collection('attendance').doc('currentSession').set({
+                        data: attendanceData,
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log('Attendance saved to Firebase:', attendanceData);
+                } catch (error) {
+                    console.error('Error saving to Firebase:', error);
+                    saveToLocalStorage();
+                }
+            } else {
+                saveToLocalStorage();
+            }
+        }
+
+        function saveToLocalStorage() {
             try {
                 localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
-                console.log('Attendance saved:', attendanceData);
+                console.log('Attendance saved to localStorage:', attendanceData);
             } catch (error) {
                 console.error('Error saving attendance data:', error);
             }
+        }
+
+        // Real-time listener for Firebase updates
+        if (useFirebase && db) {
+            db.collection('attendance').doc('currentSession')
+                .onSnapshot((doc) => {
+                    if (doc.exists) {
+                        attendanceData = doc.data().data || {};
+                        console.log('Attendance updated in real-time:', attendanceData);
+                        const searchInput = document.getElementById('searchInput');
+                        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+                        const filtered = applications.filter(app => 
+                            app.name.toLowerCase().includes(searchTerm) ||
+                            app.skills.some(skill => skill.toLowerCase().includes(searchTerm))
+                        );
+                        renderApplications(filtered);
+                    }
+                }, (error) => {
+                    console.error('Error listening to Firebase updates:', error);
+                });
         }
 
         const applications = [
@@ -767,11 +864,8 @@
             }
         }
 
-        // Initial render
-        renderApplications(applications);
-
-        // Log loaded attendance on page load
-        console.log('Attendance data loaded:', attendanceData);
+        // Initial load and render
+        loadAttendance();
 
         // Search functionality
         const searchInput = document.getElementById('searchInput');
