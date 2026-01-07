@@ -528,9 +528,9 @@
             "Shravan Patel": "07:00 PM - 07:30 PM",
             "Gaurav Mishra": "07:30 PM - 08:00 PM",
             "Komal Raj": "08:00 PM - 08:30 PM",
-            "Anushka Raj": "08:30 PM - 09:00 PM",
-            "Harsh Parag Jobanputra": "09:00 PM - 09:30 PM",
-            "Sanskruti Sandip Dhamal": "09:30 PM - 10:00 PM",
+            "Anushka Raj": "11:00 AM - 11:30 AM",
+            "Harsh Parag Jobanputra": "11:30 AM - 12:00 PM",
+            "Sanskruti Sandip Dhamal": "12:30 PM - 10:00 PM",
             "Uma Satish Salunke": "10:00 PM - 10:30 PM"
         };
 
@@ -557,8 +557,27 @@
             "Uma Satish Salunke"
         ];
 
-        // Load attendance from localStorage
-        let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || {};
+        // Load attendance from localStorage with error handling
+        let attendanceData = {};
+        try {
+            const storedData = localStorage.getItem('attendanceData');
+            if (storedData) {
+                attendanceData = JSON.parse(storedData);
+            }
+        } catch (error) {
+            console.error('Error loading attendance data:', error);
+            attendanceData = {};
+        }
+
+        // Function to save attendance data
+        function saveAttendance() {
+            try {
+                localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+                console.log('Attendance saved:', attendanceData);
+            } catch (error) {
+                console.error('Error saving attendance data:', error);
+            }
+        }
 
         const applications = [
             { name: "Akhilesh Reddy", file: "Akhilesh Reddy 2da480539ad0810ca2d0f200af1587ed.html", skills: ["Python", "React", "TypeScript", "AI Tools"] },
@@ -594,8 +613,16 @@
             } else {
                 delete attendanceData[name];
             }
-            localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
-            renderApplications(applications);
+            saveAttendance();
+            
+            // Get current search term to maintain filter
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase();
+            const filtered = applications.filter(app => 
+                app.name.toLowerCase().includes(searchTerm) ||
+                app.skills.some(skill => skill.toLowerCase().includes(searchTerm))
+            );
+            renderApplications(filtered);
         }
 
         function getAttendanceButton(name) {
@@ -742,6 +769,9 @@
 
         // Initial render
         renderApplications(applications);
+
+        // Log loaded attendance on page load
+        console.log('Attendance data loaded:', attendanceData);
 
         // Search functionality
         const searchInput = document.getElementById('searchInput');
